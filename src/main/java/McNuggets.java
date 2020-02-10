@@ -4,8 +4,6 @@ import java.util.List;
 
 public class McNuggets {
 
-    private static final boolean[] ARRAY = new boolean[1000000000];
-
     public static void main(String[] args) {
         solve(Arrays.asList(3, 5, 8));
         solve(Arrays.asList(6, 7, 8));
@@ -20,13 +18,15 @@ public class McNuggets {
     private static void solve(List<Integer> numbers) {
         Collections.sort(numbers);
         final int min = numbers.get(0);
-        ARRAY[0] = true;
+        final int max = numbers.get(numbers.size()-1);
+        final boolean[] cache = new boolean[max];
+        cache[0] = true;
 
         long startTime = System.nanoTime();
         int largest = 0;
         int numCannot = 0;
         for (int i = 1; ; ++i) {
-            if (canMakeMem(i, numbers)) {
+            if (canMakeMem(cache, i, numbers)) {
                 if (++numCannot == min) {
                     break;
                 }
@@ -39,8 +39,8 @@ public class McNuggets {
         System.out.printf("Solved %s to %d in %d\n", numbers, largest, time);
     }
 
-    private static boolean canMakeMem(int num, List<Integer> numbers) {
-        return ARRAY[num] = numbers.stream()
-                .anyMatch(n -> num-n >= 0 && ARRAY[num-n]);
+    private static boolean canMakeMem(boolean[] cache, int num, List<Integer> numbers) {
+        return cache[num % cache.length] = numbers.stream()
+                .anyMatch(n -> num-n >= 0 && cache[(num - n) % cache.length]);
     }
 }
