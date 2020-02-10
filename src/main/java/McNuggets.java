@@ -39,9 +39,9 @@ Solved [9745, 12377, 15321] to 3425051 in 84458780447 = 351
         solve(Arrays.asList(37, 59, 113));
         solve(Arrays.asList(115, 116, 117));
         solve(Arrays.asList(316, 317, 318));
-        //solve(Arrays.asList(1160, 2377, 5431));
-        //solve(Arrays.asList(9745, 12377, 15321));
-        //solve(Arrays.asList(63455, 97654, 201249));
+        solve(Arrays.asList(1160, 2377, 5431));
+        solve(Arrays.asList(9745, 12377, 15321));
+        solve(Arrays.asList(63455, 97654, 201249));
     }
 
     private static void solve(List<Integer> numbers) {
