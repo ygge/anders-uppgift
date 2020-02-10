@@ -16,8 +16,17 @@ Solved [316, 317, 318] to 49927 in 4071126934
 Solved [1160, 2377, 5431] to 248395 in 4027669905
 Solved [9745, 12377, 15321] to 3425051 in 4020720444
 Solved [63455, 97654, 201249] to 69531181 in 4179924075
+
+Solved [3, 5, 8] to 7 in 260238
+Solved [6, 7, 8] to 17 in 16438
+Solved [37, 59, 113] to 759 in 133714
+Solved [115, 116, 117] to 6554 in 1073228
+Solved [316, 317, 318] to 49927 in 3834394
+Solved [1160, 2377, 5431] to 248395 in 8018494
+Solved [9745, 12377, 15321] to 3425051 in 30845177
+Solved [63455, 97654, 201249] to 69531181 in 232755534
          */
-        solve(Arrays.asList(6, 9, 20));
+        solve(Arrays.asList(3, 5, 8));
         solve(Arrays.asList(6, 7, 8));
         solve(Arrays.asList(37, 59, 113));
         solve(Arrays.asList(115, 116, 117));
@@ -31,32 +40,44 @@ Solved [63455, 97654, 201249] to 69531181 in 4179924075
         Collections.sort(numbers);
 
         long startTime = System.nanoTime();
-
-        Arrays.fill(ARRAY, false);
         ARRAY[0] = true;
+
+        final int max = numbers.get(numbers.size()-1);
+        int start = 1;
+        Integer largest = null;
+        while (largest == null) {
+            largest = calc(numbers, start);
+            start += max;
+        }
+        long time = System.nanoTime()-startTime;
+        System.out.printf("Solved %s to %d in %d\n", numbers, largest, time);
+    }
+
+    private static Integer calc(List<Integer> numbers, int start) {
+        final int min = numbers.get(0);
+        final int max = numbers.get(numbers.size()-1);
+
+        Arrays.fill(ARRAY, start, start+max, false);
         for (int n : numbers) {
-            for (int j = 0; j + n < ARRAY.length; ++j) {
+            for (int j = Math.max(0, start-n); j + n < start+max; ++j) {
                 if (ARRAY[j]) {
                     ARRAY[j + n] = true;
                 }
             }
         }
 
-        final int min = numbers.get(0);
-        final int max = numbers.get(numbers.size()-1);
         int largest = 0;
         int numCannot = 0;
-        for (int i = max+1; ; ++i) {
+        for (int i = Math.max(0, start-min); i < start+max; ++i) {
             if (ARRAY[i]) {
                 if (++numCannot == min) {
-                    break;
+                    return largest;
                 }
             } else {
                 largest = i;
                 numCannot = 0;
             }
         }
-        long time = System.nanoTime()-startTime;
-        System.out.printf("Solved %s to %d in %d\n", numbers, largest, time);
+        return null;
     }
 }
