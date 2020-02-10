@@ -2,7 +2,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Main {
+public class First {
 
     private static final boolean PRINT_SOLUTION = false;
     private static final int NUM_V2 = 100;
