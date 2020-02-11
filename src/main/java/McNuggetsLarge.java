@@ -1,9 +1,6 @@
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class McNuggetsLarge {
@@ -30,26 +27,34 @@ public class McNuggetsLarge {
         final int min = (int)(long)numbers.get(0);
 
         long startTime = System.nanoTime();
-        final Map<Integer, Long> data = new HashMap<>();
-        data.put(0, 0L);
-        while (data.size() < min) {
-            for (long v : new HashSet<>(data.values())) {
-                for (int i = 1; i < numbers.size(); ++i) {
-                    add(data, numbers.get(i), min, v);
+        long[] data = new long[min];
+        Arrays.fill(data, -1);
+        data[0] = 0L;
+        int count = 1;
+        boolean changes = true;
+        while (count < min || changes) {
+            changes = false;
+            for (int i = 0; i < data.length; ++i) {
+                if (data[i] >= 0) {
+                    for (int j = 1; j < numbers.size(); ++j) {
+                        long value = data[i] + numbers.get(j);
+                        final int index = (int) (value % min);
+                        if (data[index] == -1) {
+                            data[index] = value;
+                            ++count;
+                        } else if (data[index] > value) {
+                            data[index] = value;
+                            changes = true;
+                        }
+                    }
                 }
             }
         }
-        long largest = data.values().stream()
-                .max(Long::compareTo)
-                .orElse(-1L);
+        long largest = 0;
+        for (long value : data) {
+            largest = Math.max(largest, value);
+        }
         final long time = System.nanoTime()-startTime;
         System.out.printf("Solved %s to %d in %d\n", numbers, largest-min, time);
-    }
-
-    private static void add(Map<Integer, Long> data, long b, int c, long v) {
-        final int bb = (int) ((v + b) % c);
-        if (!data.containsKey(bb) || data.get(bb) > v + b) {
-            data.put(bb, v + b);
-        }
     }
 }
