@@ -13,6 +13,7 @@ public class McNuggets {
         solve(Arrays.asList(1160, 2377, 5431));
         solve(Arrays.asList(9745, 12377, 15321));
         solve(Arrays.asList(63455, 97654, 201249));
+        solve(Arrays.asList(115623, 135704, 174347));
     }
 
     private static void solve(List<Integer> numbers) {
