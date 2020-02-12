@@ -1,6 +1,9 @@
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 public class McNuggetsLarge {
@@ -29,32 +32,37 @@ public class McNuggetsLarge {
         long startTime = System.nanoTime();
         long[] data = new long[min];
         Arrays.fill(data, -1);
-        data[0] = 0L;
-        int count = 1;
-        boolean changes = true;
-        while (count < min || changes) {
-            changes = false;
-            for (int i = 0; i < data.length; ++i) {
-                if (data[i] >= 0) {
-                    for (int j = 1; j < numbers.size(); ++j) {
-                        long value = data[i] + numbers.get(j);
-                        final int index = (int) (value % min);
-                        if (data[index] == -1) {
-                            data[index] = value;
-                            ++count;
-                        } else if (data[index] > value) {
-                            data[index] = value;
-                            changes = true;
-                        }
-                    }
+        int num = 0;
+        Queue<Node> que = new PriorityQueue<>(Comparator.comparingLong(a -> a.value));
+        que.add(new Node(0, 0));
+        long largest = 0;
+        while (!que.isEmpty()) {
+            ++num;
+            Node node = que.poll();
+            if (data[node.mod] != -1 && data[node.mod] <= node.value) {
+                continue;
+            }
+            data[node.mod] = node.value;
+            largest = Math.max(largest, node.value);
+            for (int j = 1; j < numbers.size(); ++j) {
+                long value = node.value + numbers.get(j);
+                final int index = (int) (value % min);
+                if (data[index] == -1 || data[index] > value) {
+                    que.add(new Node(value, index));
                 }
             }
         }
-        long largest = 0;
-        for (long value : data) {
-            largest = Math.max(largest, value);
-        }
         final long time = System.nanoTime()-startTime;
-        System.out.printf("Solved %s to %d in %d\n", numbers, largest-min, time);
+        System.out.printf("Solved %s to %d in %d (%d)\n", numbers, largest-min, time, num);
+    }
+
+    private static final class Node {
+        private final long value;
+        private final int mod;
+
+        private Node(long value, int mod) {
+            this.value = value;
+            this.mod = mod;
+        }
     }
 }
